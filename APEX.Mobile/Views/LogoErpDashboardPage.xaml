@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="APEX.Mobile.Views.LogoErpDashboardPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Logo ERP Dashboard"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Çıkış" 
+                     IconImageSource="logout_icon.png" 
+                     Clicked="OnLogoutClicked" />
+        <ToolbarItem Text="Senkronize Et" 
+                     IconImageSource="sync_icon.png" 
+                     Clicked="OnSyncClicked" />
+    </ContentPage.ToolbarItems>
+
+    <RefreshView x:Name="RefreshView" 
+                 Refreshing="OnRefreshing" 
+                 RefreshColor="{DynamicResource Primary}">
+        
+        <ScrollView>
+            <StackLayout Padding="15" Spacing="15">
+
+                <!-- Header -->
+                <Frame BackgroundColor="{DynamicResource Primary}" 
+                       CornerRadius="10" 
+                       Padding="20">
+                    <StackLayout Spacing="10">
+                        <Label Text="Logo ERP Dashboard" 
+                               FontSize="20" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center" />
+                        <StackLayout Orientation="Horizontal" 
+                                     HorizontalOptions="Center" 
+                                     Spacing="10">
+                            <Label x:Name="ConnectionStatusIcon" 
+                                   Text="●" 
+                                   FontSize="14" 
+                                   TextColor="LightGreen" />
+                            <Label Text="Bağlı" 
+                                   FontSize="14" 
+                                   TextColor="White" />
+                        </StackLayout>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Statistics Cards -->
+                <Grid ColumnDefinitions="*,*" 
+                      RowDefinitions="Auto,Auto" 
+                      ColumnSpacing="10" 
+                      RowSpacing="10">
+                    
+                    <!-- Total Products -->
+                    <Frame Grid.Row="0" Grid.Column="0" 
+                           BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                           BorderColor="{DynamicResource BorderColor}" 
+                           CornerRadius="8" 
+                           Padding="15">
+                        <StackLayout Spacing="5">
+                            <Label Text="📦" 
+                                   FontSize="24" 
+                                   HorizontalOptions="Center" />
+                            <Label x:Name="TotalProductsLabel" 
+                                   Text="0" 
+                                   FontSize="20" 
+                                   FontAttributes="Bold" 
+                                   TextColor="{DynamicResource Primary}" 
+                                   HorizontalOptions="Center" />
+                            <Label Text="Toplam Ürün" 
+                                   FontSize="12" 
+                                   TextColor="{DynamicResource SecondaryTextColor}" 
+                                   HorizontalOptions="Center" />
+                        </StackLayout>
+                    </Frame>
+
+                    <!-- Total Customers -->
+                    <Frame Grid.Row="0" Grid.Column="1" 
+                           BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                           BorderColor="{DynamicResource BorderColor}" 
+                           CornerRadius="8" 
+                           Padding="15">
+                        <StackLayout Spacing="5">
+                            <Label Text="👥" 
+                                   FontSize="24" 
+                                   HorizontalOptions="Center" />
+                            <Label x:Name="TotalCustomersLabel" 
+                                   Text="0" 
+                                   FontSize="20" 
+                                   FontAttributes="Bold" 
+                                   TextColor="{DynamicResource Primary}" 
+                                   HorizontalOptions="Center" />
+                            <Label Text="Toplam Cari" 
+                                   FontSize="12" 
+                                   TextColor="{DynamicResource SecondaryTextColor}" 
+                                   HorizontalOptions="Center" />
+                        </StackLayout>
+                    </Frame>
+
+                    <!-- Total Warehouses -->
+                    <Frame Grid.Row="1" Grid.Column="0" 
+                           BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                           BorderColor="{DynamicResource BorderColor}" 
+                           CornerRadius="8" 
+                           Padding="15">
+                        <StackLayout Spacing="5">
+                            <Label Text="🏪" 
+                                   FontSize="24" 
+                                   HorizontalOptions="Center" />
+                            <Label x:Name="TotalWarehousesLabel" 
+                                   Text="0" 
+                                   FontSize="20" 
+                                   FontAttributes="Bold" 
+                                   TextColor="{DynamicResource Primary}" 
+                                   HorizontalOptions="Center" />
+                            <Label Text="Toplam Depo" 
+                                   FontSize="12" 
+                                   TextColor="{DynamicResource SecondaryTextColor}" 
+                                   HorizontalOptions="Center" />
+                        </StackLayout>
+                    </Frame>
+
+                    <!-- Today's Sales -->
+                    <Frame Grid.Row="1" Grid.Column="1" 
+                           BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                           BorderColor="{DynamicResource BorderColor}" 
+                           CornerRadius="8" 
+                           Padding="15">
+                        <StackLayout Spacing="5">
+                            <Label Text="💰" 
+                                   FontSize="24" 
+                                   HorizontalOptions="Center" />
+                            <Label x:Name="TodaySalesLabel" 
+                                   Text="₺0" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold" 
+                                   TextColor="{DynamicResource Primary}" 
+                                   HorizontalOptions="Center" />
+                            <Label Text="Bugünkü Satış" 
+                                   FontSize="12" 
+                                   TextColor="{DynamicResource SecondaryTextColor}" 
+                                   HorizontalOptions="Center" />
+                        </StackLayout>
+                    </Frame>
+
+                </Grid>
+
+                <!-- Quick Actions -->
+                <Label Text="Hızlı İşlemler" 
+                       FontSize="18" 
+                       FontAttributes="Bold" 
+                       TextColor="{DynamicResource PrimaryTextColor}" 
+                       Margin="0,10,0,0" />
+
+                <Grid ColumnDefinitions="*,*" 
+                      RowDefinitions="Auto,Auto" 
+                      ColumnSpacing="10" 
+                      RowSpacing="10">
+                    
+                    <!-- Products -->
+                    <Button Grid.Row="0" Grid.Column="0" 
+                            Text="📦 Ürünler" 
+                            BackgroundColor="{DynamicResource Primary}" 
+                            TextColor="White" 
+                            CornerRadius="8" 
+                            HeightRequest="60" 
+                            Clicked="OnProductsClicked" />
+
+                    <!-- Stock -->
+                    <Button Grid.Row="0" Grid.Column="1" 
+                            Text="📊 Stok Takip" 
+                            BackgroundColor="{DynamicResource Secondary}" 
+                            TextColor="White" 
+                            CornerRadius="8" 
+                            HeightRequest="60" 
+                            Clicked="OnStockClicked" />
+
+                    <!-- Customers -->
+                    <Button Grid.Row="1" Grid.Column="0" 
+                            Text="👥 Cari Hesaplar" 
+                            BackgroundColor="{DynamicResource Tertiary}" 
+                            TextColor="White" 
+                            CornerRadius="8" 
+                            HeightRequest="60" 
+                            Clicked="OnCustomersClicked" />
+
+                    <!-- Reports -->
+                    <Button Grid.Row="1" Grid.Column="1" 
+                            Text="📈 Raporlar" 
+                            BackgroundColor="#FF6B35" 
+                            TextColor="White" 
+                            CornerRadius="8" 
+                            HeightRequest="60" 
+                            Clicked="OnReportsClicked" />
+
+                </Grid>
+
+                <!-- Synchronization Info -->
+                <Frame BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                       BorderColor="{DynamicResource BorderColor}" 
+                       CornerRadius="8" 
+                       Padding="15" 
+                       Margin="0,10,0,0">
+                    <StackLayout Spacing="10">
+                        <Label Text="Senkronizasyon Bilgileri" 
+                               FontSize="16" 
+                               FontAttributes="Bold" 
+                               TextColor="{DynamicResource PrimaryTextColor}" />
+                        
+                        <StackLayout Orientation="Horizontal" 
+                                     Spacing="10">
+                            <Label Text="Son Senkronizasyon:" 
+                                   FontSize="14" 
+                                   TextColor="{DynamicResource SecondaryTextColor}" />
+                            <Label x:Name="LastSyncLabel" 
+                                   Text="Henüz yapılmadı" 
+                                   FontSize="14" 
+                                   TextColor="{DynamicResource PrimaryTextColor}" />
+                        </StackLayout>
+
+                        <Button x:Name="SyncButton" 
+                                Text="Şimdi Senkronize Et" 
+                                BackgroundColor="{DynamicResource Primary}" 
+                                TextColor="White" 
+                                CornerRadius="6" 
+                                HeightRequest="40" 
+                                Clicked="OnSyncClicked" />
+                    </StackLayout>
+                </Frame>
+
+                <!-- Recent Sync Logs -->
+                <Frame BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                       BorderColor="{DynamicResource BorderColor}" 
+                       CornerRadius="8" 
+                       Padding="15">
+                    <StackLayout Spacing="10">
+                        <Label Text="Son İşlemler" 
+                               FontSize="16" 
+                               FontAttributes="Bold" 
+                               TextColor="{DynamicResource PrimaryTextColor}" />
+                        
+                        <CollectionView x:Name="RecentLogsCollectionView" 
+                                        HeightRequest="150">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="Auto,*,Auto" 
+                                          ColumnSpacing="10" 
+                                          Padding="5">
+                                        <Label Grid.Column="0" 
+                                               Text="{Binding StatusIcon}" 
+                                               FontSize="16" 
+                                               VerticalOptions="Center" />
+                                        <StackLayout Grid.Column="1">
+                                            <Label Text="{Binding Tip}" 
+                                                   FontSize="14" 
+                                                   TextColor="{DynamicResource PrimaryTextColor}" />
+                                            <Label Text="{Binding FormattedDate}" 
+                                                   FontSize="12" 
+                                                   TextColor="{DynamicResource SecondaryTextColor}" />
+                                        </StackLayout>
+                                        <Label Grid.Column="2" 
+                                               Text="{Binding StatusText}" 
+                                               FontSize="12" 
+                                               TextColor="{Binding StatusColor}" 
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </Frame>
+
+            </StackLayout>
+        </ScrollView>
+    </RefreshView>
+
+    <!-- Loading Overlay -->
+    <Grid x:Name="LoadingOverlay" 
+          IsVisible="False" 
+          BackgroundColor="#80000000">
+        <StackLayout VerticalOptions="Center" 
+                     HorizontalOptions="Center" 
+                     Spacing="10">
+            <ActivityIndicator IsRunning="True" 
+                               Color="{DynamicResource Primary}" 
+                               HeightRequest="40" 
+                               WidthRequest="40" />
+            <Label x:Name="LoadingLabel" 
+                   Text="Veriler yükleniyor..." 
+                   TextColor="White" 
+                   FontSize="16" 
+                   HorizontalOptions="Center" />
+        </StackLayout>
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APEX.Mobile.MainPage"
+             Title="SayimPro"
+             BackgroundColor="#F5F5F5">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" BackgroundColor="#6A1B9A" Padding="20,15">
+            <Label Text="SayimPro" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   TextColor="White" 
+                   HorizontalOptions="Start" 
+                   VerticalOptions="Center" />
+        </Border>
+
+        <!-- Sub Header -->
+        <Border Grid.Row="1" BackgroundColor="#E8EAF6" Padding="20,10">
+            <Label Text="Barga Soft - Depo Sayım Çözümü v1.0" 
+                   FontSize="14" 
+                   TextColor="#424242" 
+                   HorizontalOptions="Start" 
+                   VerticalOptions="Center" />
+        </Border>
+
+        <!-- Main Content -->
+        <ScrollView Grid.Row="2" Padding="20">
+            <VerticalStackLayout Spacing="20">
+                
+                <!-- Yeni Sayım Başlat Card -->
+                <Border BackgroundColor="White" 
+                        Stroke="#E0E0E0" 
+                        StrokeThickness="1" 
+                        Padding="20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12" />
+                    </Border.StrokeShape>
+                    
+                    <VerticalStackLayout Spacing="15">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <Label Grid.Column="0" 
+                                   Text="📦" 
+                                   FontSize="32" 
+                                   VerticalOptions="Center" 
+                                   Margin="0,0,15,0" />
+                            
+                            <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                <Label Text="Yeni Sayım Başlat" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2E7D32" />
+                                <Label Text="Barkod okutarak veya manuel girerek yeni bir depo sayımı başlatın." 
+                                       FontSize="14" 
+                                       TextColor="#666" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        
+                        <Button x:Name="YeniSayimButton" 
+                                Text="Sayıma Başla" 
+                                BackgroundColor="#4CAF50" 
+                                TextColor="White" 
+                                CornerRadius="8" 
+                                Padding="0,12" 
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                Clicked="YeniSayimButton_Clicked" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Ürün Ara Card -->
+                <Border BackgroundColor="White" 
+                        Stroke="#E0E0E0" 
+                        StrokeThickness="1" 
+                        Padding="20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12" />
+                    </Border.StrokeShape>
+                    
+                    <VerticalStackLayout Spacing="15">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <Label Grid.Column="0" 
+                                   Text="🔍" 
+                                   FontSize="32" 
+                                   VerticalOptions="Center" 
+                                   Margin="0,0,15,0" />
+                            
+                            <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                <Label Text="Ürün Ara" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#1976D2" />
+                                <Label Text="Barkod numarası ile ürün bilgisi sorgulayın." 
+                                       FontSize="14" 
+                                       TextColor="#666" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        
+                        <Entry x:Name="BarkodEntry" 
+                               Placeholder="Barkod numarası..." 
+                               BackgroundColor="#F5F5F5" 
+                               FontSize="16"
+                               Margin="0,5" />
+                        
+                        <Button x:Name="BarkodAraButton" 
+                                Text="Ara" 
+                                BackgroundColor="#2196F3" 
+                                TextColor="White" 
+                                CornerRadius="8" 
+                                Padding="0,12" 
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                Clicked="BarkodAraButton_Clicked" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Ürün Bulundu Mesajı -->
+                <Border x:Name="UrunBulunduBorder" 
+                        BackgroundColor="#E8F5E8" 
+                        Stroke="#4CAF50" 
+                        StrokeThickness="1" 
+                        Padding="15" 
+                        IsVisible="False">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+                    
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Ürün Bulundu!" 
+                               FontSize="16" 
+                               FontAttributes="Bold" 
+                               TextColor="#2E7D32" />
+                        <Label x:Name="UrunBilgiLabel" 
+                               FontSize="14" 
+                               TextColor="#2E7D32" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Hata Mesajı -->
+                <Border x:Name="HataMesajiBorder" 
+                        BackgroundColor="#FFEBEE" 
+                        Stroke="#F44336" 
+                        StrokeThickness="1" 
+                        Padding="15" 
+                        IsVisible="False">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+                    
+                    <Label x:Name="HataMesajiLabel" 
+                           FontSize="14" 
+                           TextColor="#C62828" />
+                </Border>
+
+                <!-- Tüm Ürünler Card -->
+                <Border BackgroundColor="White" 
+                        Stroke="#E0E0E0" 
+                        StrokeThickness="1" 
+                        Padding="20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12" />
+                    </Border.StrokeShape>
+                    
+                    <VerticalStackLayout Spacing="15">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <Label Grid.Column="0" 
+                                   Text="📋" 
+                                   FontSize="32" 
+                                   VerticalOptions="Center" 
+                                   Margin="0,0,15,0" />
+                            
+                            <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                <Label Text="Tüm Ürünler" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#FF8F00" />
+                                <Label Text="Sistemdeki tüm ürünleri listeleyin." 
+                                       FontSize="14" 
+                                       TextColor="#666" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        
+                        <Button x:Name="TumUrunlerButton" 
+                                Text="Ürünleri Listele" 
+                                BackgroundColor="#FF9800" 
+                                TextColor="White" 
+                                CornerRadius="8" 
+                                Padding="0,12" 
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                Clicked="TumUrunlerButton_Clicked" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Bekleyen Sayımlar Card -->
+                <Border BackgroundColor="White" 
+                        Stroke="#E0E0E0" 
+                        StrokeThickness="1" 
+                        Padding="20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12" />
+                    </Border.StrokeShape>
+                    
+                    <VerticalStackLayout Spacing="15">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <Label Grid.Column="0" 
+                                   Text="⏳" 
+                                   FontSize="32" 
+                                   VerticalOptions="Center" 
+                                   Margin="0,0,15,0" />
+                            
+                            <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                <Label Text="Bekleyen Sayımlar" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#7B1FA2" />
+                                <Label x:Name="BekleyenSayimLabel" 
+                                       Text="Bekleyen sayım yok" 
+                                       FontSize="14" 
+                                       TextColor="#666" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        
+                        <Button x:Name="BekleyenSayimlariGonderButton" 
+                                Text="Gönder" 
+                                BackgroundColor="#9C27B0" 
+                                TextColor="White" 
+                                CornerRadius="8" 
+                                Padding="0,12" 
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                IsVisible="False" 
+                                Clicked="BekleyenSayimlariGonderButton_Clicked" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Raporlar Card -->
+                <Border BackgroundColor="White" 
+                        Stroke="#E0E0E0" 
+                        StrokeThickness="1" 
+                        Padding="20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12" />
+                    </Border.StrokeShape>
+                    
+                    <VerticalStackLayout Spacing="15">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <Label Grid.Column="0" 
+                                   Text="📊" 
+                                   FontSize="32" 
+                                   VerticalOptions="Center" 
+                                   Margin="0,0,15,0" />
+                            
+                            <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                <Label Text="Raporlar" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#455A64" />
+                                <Label Text="Sayım raporlarını görüntüleyin ve analiz edin." 
+                                       FontSize="14" 
+                                       TextColor="#666" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        
+                        <Button x:Name="RaporlarButton" 
+                                Text="Raporları Görüntüle" 
+                                BackgroundColor="#607D8B" 
+                                TextColor="White" 
+                                CornerRadius="8" 
+                                Padding="0,12" 
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                Clicked="RaporlarButton_Clicked" />
+                    </VerticalStackLayout>
+                </Border>
+                
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

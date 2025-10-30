@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="APEX.Mobile.Views.LogoErpStockPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Stok Takip"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Yenile" 
+                     IconImageSource="refresh.png"
+                     Clicked="OnRefreshClicked" />
+        <ToolbarItem Text="Filtre" 
+                     IconImageSource="filter.png"
+                     Clicked="OnFilterClicked" />
+    </ContentPage.ToolbarItems>
+
+    <Grid>
+        <ScrollView>
+            <StackLayout Padding="16" Spacing="16">
+                
+                <!-- Arama ve Filtre -->
+                <Frame BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                       HasShadow="True" 
+                       CornerRadius="8">
+                    <StackLayout Spacing="12">
+                        
+                        <!-- Arama Çubuğu -->
+                        <SearchBar x:Name="SearchBar"
+                                   Placeholder="Ürün kodu, adı veya barkod ile ara..."
+                                   TextChanged="OnSearchTextChanged"
+                                   BackgroundColor="{DynamicResource SearchBarBackgroundColor}" />
+                        
+                        <!-- Filtre Bilgisi -->
+                        <StackLayout x:Name="FilterInfoLayout" 
+                                     Orientation="Horizontal" 
+                                     IsVisible="False">
+                            <Label Text="Filtre:" 
+                                   FontAttributes="Bold" 
+                                   VerticalOptions="Center" />
+                            <Label x:Name="FilterInfoLabel" 
+                                   VerticalOptions="Center" 
+                                   TextColor="{DynamicResource Primary}" />
+                            <Button Text="✕" 
+                                    BackgroundColor="Transparent" 
+                                    TextColor="{DynamicResource Primary}"
+                                    FontSize="16"
+                                    Padding="8,0"
+                                    Clicked="OnClearFilterClicked" />
+                        </StackLayout>
+                        
+                    </StackLayout>
+                </Frame>
+
+                <!-- Stok Özeti -->
+                <Frame BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                       HasShadow="True" 
+                       CornerRadius="8">
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*,*">
+                        
+                        <Label Grid.Row="0" Grid.ColumnSpan="3"
+                               Text="Stok Özeti"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               Margin="0,0,0,12" />
+                        
+                        <StackLayout Grid.Row="1" Grid.Column="0">
+                            <Label x:Name="TotalProductsLabel" 
+                                   Text="0"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"
+                                   TextColor="{DynamicResource Primary}" />
+                            <Label Text="Toplam Ürün"
+                                   FontSize="12"
+                                   HorizontalOptions="Center"
+                                   TextColor="{DynamicResource SecondaryTextColor}" />
+                        </StackLayout>
+                        
+                        <StackLayout Grid.Row="1" Grid.Column="1">
+                            <Label x:Name="LowStockLabel" 
+                                   Text="0"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"
+                                   TextColor="Red" />
+                            <Label Text="Düşük Stok"
+                                   FontSize="12"
+                                   HorizontalOptions="Center"
+                                   TextColor="{DynamicResource SecondaryTextColor}" />
+                        </StackLayout>
+                        
+                        <StackLayout Grid.Row="1" Grid.Column="2">
+                            <Label x:Name="OutOfStockLabel" 
+                                   Text="0"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"
+                                   TextColor="DarkRed" />
+                            <Label Text="Stokta Yok"
+                                   FontSize="12"
+                                   HorizontalOptions="Center"
+                                   TextColor="{DynamicResource SecondaryTextColor}" />
+                        </StackLayout>
+                        
+                    </Grid>
+                </Frame>
+
+                <!-- Stok Listesi -->
+                <Frame BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                       HasShadow="True" 
+                       CornerRadius="8">
+                    <StackLayout>
+                        
+                        <Label Text="Stok Durumu"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               Margin="0,0,0,12" />
+                        
+                        <RefreshView x:Name="RefreshView" 
+                                     Refreshing="OnRefreshing">
+                            <CollectionView x:Name="StockCollectionView"
+                                            SelectionMode="Single"
+                                            SelectionChanged="OnStockItemSelected">
+                                
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Padding="12" 
+                                              RowDefinitions="Auto,Auto,Auto" 
+                                              ColumnDefinitions="*,Auto">
+                                            
+                                            <!-- Ürün Adı -->
+                                            <Label Grid.Row="0" Grid.Column="0"
+                                                   Text="{Binding MalzemeAdi}"
+                                                   FontSize="16"
+                                                   FontAttributes="Bold" />
+                                            
+                                            <!-- Stok Durumu İkonu -->
+                                            <Label Grid.Row="0" Grid.Column="1"
+                                                   Text="{Binding StockStatusIcon}"
+                                                   FontSize="20"
+                                                   TextColor="{Binding StockColor}"
+                                                   VerticalOptions="Center" />
+                                            
+                                            <!-- Ürün Kodu ve Barkod -->
+                                            <StackLayout Grid.Row="1" Grid.Column="0" 
+                                                         Orientation="Horizontal" 
+                                                         Spacing="8">
+                                                <Label Text="{Binding MalzemeKodu}"
+                                                       FontSize="14"
+                                                       TextColor="{DynamicResource SecondaryTextColor}" />
+                                                <Label Text="{Binding Barkod}"
+                                                       FontSize="14"
+                                                       TextColor="{DynamicResource SecondaryTextColor}"
+                                                       IsVisible="{Binding HasBarcode}" />
+                                            </StackLayout>
+                                            
+                                            <!-- Stok Bilgileri -->
+                                            <Grid Grid.Row="2" Grid.ColumnSpan="2" 
+                                                  ColumnDefinitions="*,*,*" 
+                                                  Margin="0,8,0,0">
+                                                
+                                                <StackLayout Grid.Column="0">
+                                                    <Label Text="Mevcut Stok"
+                                                           FontSize="12"
+                                                           TextColor="{DynamicResource SecondaryTextColor}" />
+                                                    <Label Text="{Binding FormattedCurrentStock}"
+                                                           FontSize="14"
+                                                           FontAttributes="Bold"
+                                                           TextColor="{Binding StockColor}" />
+                                                </StackLayout>
+                                                
+                                                <StackLayout Grid.Column="1" 
+                                                             IsVisible="{Binding HasMinimumStock}">
+                                                    <Label Text="Min. Stok"
+                                                           FontSize="12"
+                                                           TextColor="{DynamicResource SecondaryTextColor}" />
+                                                    <Label Text="{Binding FormattedMinimumStock}"
+                                                           FontSize="14"
+                                                           FontAttributes="Bold" />
+                                                </StackLayout>
+                                                
+                                                <StackLayout Grid.Column="2" 
+                                                             IsVisible="{Binding HasLastMovement}">
+                                                    <Label Text="Son Hareket"
+                                                           FontSize="12"
+                                                           TextColor="{DynamicResource SecondaryTextColor}" />
+                                                    <Label Text="{Binding LastMovementDate}"
+                                                           FontSize="14" />
+                                                </StackLayout>
+                                                
+                                            </Grid>
+                                            
+                                            <!-- Ayırıcı Çizgi -->
+                                            <BoxView Grid.Row="3" Grid.ColumnSpan="2"
+                                                     Height="1"
+                                                     BackgroundColor="{DynamicResource SeparatorColor}"
+                                                     Margin="0,12,0,0" />
+                                            
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                                
+                                <CollectionView.EmptyView>
+                                    <StackLayout Padding="20" 
+                                                 HorizontalOptions="Center" 
+                                                 VerticalOptions="Center">
+                                        <Label x:Name="EmptyViewLabel"
+                                               Text="Stok bilgisi bulunamadı"
+                                               FontSize="16"
+                                               HorizontalOptions="Center"
+                                               TextColor="{DynamicResource SecondaryTextColor}" />
+                                        <Button x:Name="RetryButton"
+                                                Text="Tekrar Dene"
+                                                Clicked="OnRetryClicked"
+                                                IsVisible="False"
+                                                Margin="0,12,0,0" />
+                                    </StackLayout>
+                                </CollectionView.EmptyView>
+                                
+                            </CollectionView>
+                        </RefreshView>
+                        
+                    </StackLayout>
+                </Frame>
+
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Loading Overlay -->
+        <Grid x:Name="LoadingOverlay" 
+              IsVisible="False" 
+              BackgroundColor="#80000000">
+            <StackLayout HorizontalOptions="Center" 
+                         VerticalOptions="Center">
+                <ActivityIndicator IsRunning="True" 
+                                   Color="{DynamicResource Primary}" 
+                                   Scale="1.5" />
+                <Label x:Name="LoadingLabel"
+                       Text="Yükleniyor..."
+                       TextColor="White"
+                       FontSize="16"
+                       HorizontalOptions="Center"
+                       Margin="0,12,0,0" />
+            </StackLayout>
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

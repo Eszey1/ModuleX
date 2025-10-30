@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="APEX.Mobile.Views.LogoErpProductListPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Logo ERP Ürünler"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Filtrele" 
+                     IconImageSource="filter_icon.png" 
+                     Clicked="OnFilterClicked" />
+        <ToolbarItem Text="Yenile" 
+                     IconImageSource="refresh_icon.png" 
+                     Clicked="OnRefreshClicked" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto,*">
+        
+        <!-- Search Bar -->
+        <Frame Grid.Row="0" 
+               BackgroundColor="{DynamicResource CardBackgroundColor}" 
+               BorderColor="{DynamicResource BorderColor}" 
+               CornerRadius="0" 
+               Padding="15">
+            <StackLayout Spacing="10">
+                <SearchBar x:Name="ProductSearchBar" 
+                           Placeholder="Ürün adı, kodu veya barkod ile ara..." 
+                           BackgroundColor="{DynamicResource EntryBackgroundColor}" 
+                           TextColor="{DynamicResource PrimaryTextColor}" 
+                           SearchCommand="{Binding SearchCommand}" 
+                           SearchCommandParameter="{Binding Text, Source={x:Reference ProductSearchBar}}" 
+                           TextChanged="OnSearchTextChanged" />
+                
+                <!-- Filter Info -->
+                <StackLayout x:Name="FilterInfoLayout" 
+                             Orientation="Horizontal" 
+                             Spacing="10" 
+                             IsVisible="False">
+                    <Label Text="Filtre aktif:" 
+                           FontSize="12" 
+                           TextColor="{DynamicResource SecondaryTextColor}" />
+                    <Label x:Name="FilterInfoLabel" 
+                           Text="" 
+                           FontSize="12" 
+                           TextColor="{DynamicResource Primary}" />
+                    <Button x:Name="ClearFilterButton" 
+                            Text="Temizle" 
+                            FontSize="12" 
+                            BackgroundColor="Transparent" 
+                            TextColor="{DynamicResource Primary}" 
+                            Padding="5,0" 
+                            Clicked="OnClearFilterClicked" />
+                </StackLayout>
+            </StackLayout>
+        </Frame>
+
+        <!-- Product List -->
+        <RefreshView Grid.Row="1" 
+                     x:Name="RefreshView" 
+                     Refreshing="OnRefreshing" 
+                     RefreshColor="{DynamicResource Primary}">
+            
+            <CollectionView x:Name="ProductsCollectionView" 
+                            BackgroundColor="Transparent" 
+                            SelectionMode="Single" 
+                            SelectionChanged="OnProductSelected">
+                
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="0">
+                            <Frame BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                                   BorderColor="{DynamicResource BorderColor}" 
+                                   CornerRadius="8" 
+                                   Margin="15,5" 
+                                   Padding="15">
+                                
+                                <Grid ColumnDefinitions="Auto,*,Auto" 
+                                      ColumnSpacing="15">
+                                    
+                                    <!-- Product Icon -->
+                                    <Frame Grid.Column="0" 
+                                           BackgroundColor="{DynamicResource Primary}" 
+                                           CornerRadius="25" 
+                                           HeightRequest="50" 
+                                           WidthRequest="50" 
+                                           Padding="0" 
+                                           VerticalOptions="Center">
+                                        <Label Text="📦" 
+                                               FontSize="20" 
+                                               HorizontalOptions="Center" 
+                                               VerticalOptions="Center" />
+                                    </Frame>
+
+                                    <!-- Product Info -->
+                                    <StackLayout Grid.Column="1" 
+                                                 Spacing="5" 
+                                                 VerticalOptions="Center">
+                                        <Label Text="{Binding MalzemeAdi}" 
+                                               FontSize="16" 
+                                               FontAttributes="Bold" 
+                                               TextColor="{DynamicResource PrimaryTextColor}" 
+                                               LineBreakMode="TailTruncation" />
+                                        
+                                        <Label Text="{Binding MalzemeKodu}" 
+                                               FontSize="14" 
+                                               TextColor="{DynamicResource SecondaryTextColor}" />
+                                        
+                                        <StackLayout Orientation="Horizontal" 
+                                                     Spacing="10" 
+                                                     IsVisible="{Binding HasBarcode}">
+                                            <Label Text="Barkod:" 
+                                                   FontSize="12" 
+                                                   TextColor="{DynamicResource SecondaryTextColor}" />
+                                            <Label Text="{Binding Barkod}" 
+                                                   FontSize="12" 
+                                                   TextColor="{DynamicResource PrimaryTextColor}" />
+                                        </StackLayout>
+
+                                        <StackLayout Orientation="Horizontal" 
+                                                     Spacing="10">
+                                            <Label Text="Birim:" 
+                                                   FontSize="12" 
+                                                   TextColor="{DynamicResource SecondaryTextColor}" />
+                                            <Label Text="{Binding Birim}" 
+                                                   FontSize="12" 
+                                                   TextColor="{DynamicResource PrimaryTextColor}" />
+                                            
+                                            <Label Text="Kategori:" 
+                                                   FontSize="12" 
+                                                   TextColor="{DynamicResource SecondaryTextColor}" 
+                                                   IsVisible="{Binding HasCategory}" />
+                                            <Label Text="{Binding KategoriAdi}" 
+                                                   FontSize="12" 
+                                                   TextColor="{DynamicResource PrimaryTextColor}" 
+                                                   IsVisible="{Binding HasCategory}" />
+                                        </StackLayout>
+                                    </StackLayout>
+
+                                    <!-- Price and Stock Info -->
+                                    <StackLayout Grid.Column="2" 
+                                                 Spacing="5" 
+                                                 VerticalOptions="Center" 
+                                                 HorizontalOptions="End">
+                                        <Label Text="{Binding FormattedSalesPrice}" 
+                                               FontSize="16" 
+                                               FontAttributes="Bold" 
+                                               TextColor="{DynamicResource Primary}" 
+                                               HorizontalOptions="End" 
+                                               IsVisible="{Binding HasSalesPrice}" />
+                                        
+                                        <StackLayout Orientation="Horizontal" 
+                                                     Spacing="5" 
+                                                     HorizontalOptions="End" 
+                                                     IsVisible="{Binding HasStock}">
+                                            <Label Text="Stok:" 
+                                                   FontSize="12" 
+                                                   TextColor="{DynamicResource SecondaryTextColor}" />
+                                            <Label Text="{Binding FormattedStock}" 
+                                                   FontSize="12" 
+                                                   TextColor="{Binding StockColor}" 
+                                                   FontAttributes="Bold" />
+                                        </StackLayout>
+
+                                        <Label Text="{Binding StatusText}" 
+                                               FontSize="10" 
+                                               TextColor="{Binding StatusColor}" 
+                                               HorizontalOptions="End" />
+                                    </StackLayout>
+
+                                </Grid>
+                            </Frame>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyView>
+                    <StackLayout VerticalOptions="Center" 
+                                 HorizontalOptions="Center" 
+                                 Spacing="10" 
+                                 Padding="50">
+                        <Label Text="📦" 
+                               FontSize="48" 
+                               HorizontalOptions="Center" 
+                               TextColor="{DynamicResource SecondaryTextColor}" />
+                        <Label x:Name="EmptyViewLabel" 
+                               Text="Ürün bulunamadı" 
+                               FontSize="16" 
+                               TextColor="{DynamicResource SecondaryTextColor}" 
+                               HorizontalOptions="Center" />
+                        <Button x:Name="RetryButton" 
+                                Text="Tekrar Dene" 
+                                BackgroundColor="{DynamicResource Primary}" 
+                                TextColor="White" 
+                                CornerRadius="6" 
+                                Clicked="OnRetryClicked" 
+                                IsVisible="False" />
+                    </StackLayout>
+                </CollectionView.EmptyView>
+
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Loading Overlay -->
+        <Grid x:Name="LoadingOverlay" 
+              Grid.RowSpan="2" 
+              IsVisible="False" 
+              BackgroundColor="#80000000">
+            <StackLayout VerticalOptions="Center" 
+                         HorizontalOptions="Center" 
+                         Spacing="10">
+                <ActivityIndicator IsRunning="True" 
+                                   Color="{DynamicResource Primary}" 
+                                   HeightRequest="40" 
+                                   WidthRequest="40" />
+                <Label x:Name="LoadingLabel" 
+                       Text="Ürünler yükleniyor..." 
+                       TextColor="White" 
+                       FontSize="16" 
+                       HorizontalOptions="Center" />
+            </StackLayout>
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

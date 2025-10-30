@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
+             x:Class="APEX.Mobile.Views.BarcodeScannerPage"
+             Title="Barkod Okut"
+             BackgroundColor="Black">
+
+    <Grid>
+        <!-- Camera View -->
+        <scanner:CameraView x:Name="BarcodeScanner"
+                           CameraEnabled="True"
+                           VibrationOnDetected="True"
+                           AimMode="True"
+                           OnDetectionFinished="CameraView_OnDetectionFinished"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalOptions="FillAndExpand"/>
+
+        <!-- Overlay UI -->
+        <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            
+            <!-- Top Bar -->
+            <Border VerticalOptions="Start" 
+                    BackgroundColor="#80000000" 
+                    Padding="20,40,20,20"
+                    StrokeThickness="0">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Button Grid.Column="0"
+                            x:Name="BackButton"
+                            Text="←"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            FontSize="24"
+                            Clicked="BackButton_Clicked"
+                            WidthRequest="50"
+                            HeightRequest="50"/>
+                    
+                    <Label Grid.Column="1"
+                           Text="Barkodu kameraya tutun"
+                           TextColor="White"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                    
+                    <Button Grid.Column="2"
+                            x:Name="ManualEntryButton"
+                            Text="⌨️"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            FontSize="20"
+                            Clicked="ManualEntryButton_Clicked"
+                            WidthRequest="50"
+                            HeightRequest="50"/>
+                </Grid>
+            </Border>
+
+            <!-- Center Viewfinder -->
+            <Border VerticalOptions="Center" 
+                    HorizontalOptions="Center"
+                    Stroke="White"
+                    StrokeThickness="2"
+                    BackgroundColor="Transparent"
+                    WidthRequest="250"
+                    HeightRequest="150">
+                <Border.StrokeDashArray>
+                    <x:Array Type="{x:Type x:Double}">
+                        <x:Double>10</x:Double>
+                        <x:Double>5</x:Double>
+                    </x:Array>
+                </Border.StrokeDashArray>
+            </Border>
+
+            <!-- Bottom Instructions -->
+            <Border VerticalOptions="End" 
+                    BackgroundColor="#80000000" 
+                    Padding="20"
+                    StrokeThickness="0">
+                <Label Text="Barkodu çerçeve içine yerleştirin ve otomatik okuma için bekleyin"
+                       TextColor="White"
+                       FontSize="14"
+                       HorizontalTextAlignment="Center"/>
+            </Border>
+
+        </Grid>
+    </Grid>
+
+</ContentPage>

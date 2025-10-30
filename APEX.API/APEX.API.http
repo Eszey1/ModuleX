@@ -1,0 +1,19 @@
+@APEX.API_HostAddress = http://localhost:5105
+
+# Test - Ürün Listesi
+GET {{APEX.API_HostAddress}}/api/Urun/liste
+Accept: application/json
+
+###
+
+# Test - Barkod Arama
+GET {{APEX.API_HostAddress}}/api/Urun/ara/123456789
+Accept: application/json
+
+###
+
+# Test - Sağlık Kontrolü (Eğer varsa)
+GET {{APEX.API_HostAddress}}/health
+Accept: application/json
+
+###

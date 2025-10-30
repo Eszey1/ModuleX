@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\APEX.Core\APEX.Core.csproj" />
+    <ProjectReference Include="..\APEX.Business\APEX.Business.csproj" />
+    <ProjectReference Include="..\APEX.Data\APEX.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="devexpress.wpf.controls" Version="25.1.3" />
+    <PackageReference Include="DevExpress.Wpf.Core" Version="25.1.3" />
+    <PackageReference Include="DevExpress.Wpf.Ribbon" Version="25.1.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="LogoErpLoginDialog.xaml" />
+    <Page Include="DevDashboard.xaml" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="APEX.Mobile.Views.LogoErpLoginPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Logo ERP Giriş"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+    
+    <ScrollView>
+        <Grid Padding="20" RowSpacing="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <StackLayout Grid.Row="0" Spacing="10">
+                <Image Source="logo_erp_icon.png" 
+                       HeightRequest="80" 
+                       WidthRequest="80" 
+                       HorizontalOptions="Center" />
+                <Label Text="Logo ERP Bağlantısı" 
+                       FontSize="24" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="Center" 
+                       TextColor="{DynamicResource PrimaryTextColor}" />
+                <Label Text="Logo ERP sisteminize bağlanmak için giriş bilgilerinizi giriniz" 
+                       FontSize="14" 
+                       HorizontalOptions="Center" 
+                       TextColor="{DynamicResource SecondaryTextColor}" 
+                       HorizontalTextAlignment="Center" />
+            </StackLayout>
+
+            <!-- Login Form -->
+            <StackLayout Grid.Row="1" Spacing="15" VerticalOptions="Center">
+                
+                <!-- Connection Status -->
+                <Frame BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                       BorderColor="{DynamicResource BorderColor}" 
+                       CornerRadius="8" 
+                       Padding="15">
+                    <StackLayout Orientation="Horizontal" Spacing="10">
+                        <Label x:Name="ConnectionStatusIcon" 
+                               Text="●" 
+                               FontSize="16" 
+                               TextColor="Red" 
+                               VerticalOptions="Center" />
+                        <Label x:Name="ConnectionStatusLabel" 
+                               Text="Bağlantı durumu kontrol ediliyor..." 
+                               FontSize="14" 
+                               TextColor="{DynamicResource SecondaryTextColor}" 
+                               VerticalOptions="Center" />
+                    </StackLayout>
+                </Frame>
+
+                <!-- Username -->
+                <StackLayout Spacing="5">
+                    <Label Text="Kullanıcı Adı *" 
+                           FontSize="14" 
+                           TextColor="{DynamicResource PrimaryTextColor}" />
+                    <Entry x:Name="UsernameEntry" 
+                           Placeholder="Kullanıcı adınızı giriniz" 
+                           Text="{Binding KullaniciAdi}" 
+                           BackgroundColor="{DynamicResource EntryBackgroundColor}" 
+                           TextColor="{DynamicResource PrimaryTextColor}" />
+                </StackLayout>
+
+                <!-- Password -->
+                <StackLayout Spacing="5">
+                    <Label Text="Şifre *" 
+                           FontSize="14" 
+                           TextColor="{DynamicResource PrimaryTextColor}" />
+                    <Entry x:Name="PasswordEntry" 
+                           Placeholder="Şifrenizi giriniz" 
+                           Text="{Binding Sifre}" 
+                           IsPassword="True" 
+                           BackgroundColor="{DynamicResource EntryBackgroundColor}" 
+                           TextColor="{DynamicResource PrimaryTextColor}" />
+                </StackLayout>
+
+                <!-- Company Code -->
+                <StackLayout Spacing="5">
+                    <Label Text="Şirket Kodu (Opsiyonel)" 
+                           FontSize="14" 
+                           TextColor="{DynamicResource PrimaryTextColor}" />
+                    <Entry x:Name="CompanyCodeEntry" 
+                           Placeholder="Şirket kodunu giriniz" 
+                           Text="{Binding SirketKodu}" 
+                           BackgroundColor="{DynamicResource EntryBackgroundColor}" 
+                           TextColor="{DynamicResource PrimaryTextColor}" />
+                </StackLayout>
+
+                <!-- Remember Me -->
+                <StackLayout Orientation="Horizontal" Spacing="10">
+                    <CheckBox x:Name="RememberMeCheckBox" 
+                              IsChecked="{Binding BeniHatirla}" 
+                              Color="{DynamicResource Primary}" />
+                    <Label Text="Beni hatırla" 
+                           FontSize="14" 
+                           TextColor="{DynamicResource PrimaryTextColor}" 
+                           VerticalOptions="Center" />
+                </StackLayout>
+
+                <!-- Error Message -->
+                <Label x:Name="ErrorMessageLabel" 
+                       Text="" 
+                       FontSize="12" 
+                       TextColor="Red" 
+                       IsVisible="False" 
+                       HorizontalTextAlignment="Center" />
+
+            </StackLayout>
+
+            <!-- Buttons -->
+            <StackLayout Grid.Row="2" Spacing="10">
+                
+                <!-- Test Connection Button -->
+                <Button x:Name="TestConnectionButton" 
+                        Text="Bağlantıyı Test Et" 
+                        BackgroundColor="{DynamicResource Secondary}" 
+                        TextColor="White" 
+                        CornerRadius="8" 
+                        HeightRequest="45" 
+                        Clicked="OnTestConnectionClicked" />
+
+                <!-- Login Button -->
+                <Button x:Name="LoginButton" 
+                        Text="Giriş Yap" 
+                        BackgroundColor="{DynamicResource Primary}" 
+                        TextColor="White" 
+                        CornerRadius="8" 
+                        HeightRequest="45" 
+                        Clicked="OnLoginClicked" />
+
+                <!-- Cancel Button -->
+                <Button x:Name="CancelButton" 
+                        Text="İptal" 
+                        BackgroundColor="Transparent" 
+                        TextColor="{DynamicResource Primary}" 
+                        BorderColor="{DynamicResource Primary}" 
+                        BorderWidth="1" 
+                        CornerRadius="8" 
+                        HeightRequest="45" 
+                        Clicked="OnCancelClicked" />
+
+            </StackLayout>
+
+        </Grid>
+    </ScrollView>
+
+    <!-- Loading Overlay -->
+    <Grid x:Name="LoadingOverlay" 
+          IsVisible="False" 
+          BackgroundColor="#80000000">
+        <StackLayout VerticalOptions="Center" 
+                     HorizontalOptions="Center" 
+                     Spacing="10">
+            <ActivityIndicator IsRunning="True" 
+                               Color="{DynamicResource Primary}" 
+                               HeightRequest="40" 
+                               WidthRequest="40" />
+            <Label x:Name="LoadingLabel" 
+                   Text="Bağlantı test ediliyor..." 
+                   TextColor="White" 
+                   FontSize="16" 
+                   HorizontalOptions="Center" />
+        </StackLayout>
+    </Grid>
+
+</ContentPage>
