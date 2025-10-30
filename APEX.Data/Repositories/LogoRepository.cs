@@ -1,6 +1,7 @@
 using APEX.Core.Entities;
 using APEX.Core.Interfaces;
 using Microsoft.Data.SqlClient;
+using System.Linq;
 
 namespace APEX.Data.Repositories
 {
@@ -8,7 +9,10 @@ namespace APEX.Data.Repositories
     {
         private readonly string _connectionString;
         private readonly string _firmaNo;
-        private static readonly List<Sayim> _mockSayimlar = new List<Sayim>();
+        private static readonly List<Sayim> _mockSayimlar = new();
+        private static readonly object _mockSayimLock = new();
+        private static int _nextSayimId = 1;
+        private static int _nextSayimDetayId = 1;
 
         public LogoRepository(string connectionString, string firmaNo)
         {
@@ -141,21 +145,47 @@ namespace APEX.Data.Repositories
             {
                 // Geçici mock implementation - gerçek veritabanı bağlantısı olmadığında
                 await Task.Delay(100); // Simulate database operation
-                
-                // Sayımı mock listesine ekle
-                var yeniSayim = new Sayim
-                {
-                    Id = _mockSayimlar.Count + 1,
-                    Tarih = sayim.Tarih,
-                    KullaniciId = sayim.KullaniciId ?? "1",
-                    FisNo = $"SYM{DateTime.Now:yyyyMMddHHmmss}",
-                    Durum = "Tamamlandı",
-                    Detaylar = sayim.Detaylar.ToList(),
-                    Urunler = sayim.Detaylar.ToList()
-                };
 
-                _mockSayimlar.Add(yeniSayim);
-                
+                lock (_mockSayimLock)
+                {
+                    EnsureNextIdsInitialized();
+
+                    var sayimId = _nextSayimId++;
+                    var fisNo = $"SYM{DateTime.UtcNow:yyyyMMddHHmmssfff}";
+
+                    var detaylar = sayim.Detaylar
+                        .Select(detay => new SayimDetay
+                        {
+                            Id = detay.Id > 0 ? detay.Id : _nextSayimDetayId++,
+                            SayimId = sayimId,
+                            UrunId = detay.UrunId,
+                            UrunKodu = detay.UrunKodu,
+                            UrunAdi = detay.UrunAdi,
+                            Barkod = detay.Barkod,
+                            MevcutStok = detay.MevcutStok,
+                            SayilanMiktar = detay.SayilanMiktar,
+                            Fark = detay.Fark,
+                            Birim = detay.Birim,
+                            SonGuncelleme = detay.SonGuncelleme,
+                            MalzemeKodu = detay.MalzemeKodu ?? string.Empty,
+                            DepoKodu = detay.DepoKodu ?? string.Empty
+                        })
+                        .ToList();
+
+                    var yeniSayim = new Sayim
+                    {
+                        Id = sayimId,
+                        Tarih = sayim.Tarih,
+                        KullaniciId = sayim.KullaniciId ?? "1",
+                        FisNo = fisNo,
+                        Durum = sayim.Durum ?? "Tamamlandı",
+                        Detaylar = detaylar,
+                        Urunler = detaylar
+                    };
+
+                    _mockSayimlar.Add(yeniSayim);
+                }
+
                 return true;
 
                 /* Gerçek veritabanı implementasyonu - şimdilik kapalı
@@ -261,7 +291,41 @@ namespace APEX.Data.Repositories
         public Task<List<Sayim>> SayimListesiGetirAsync(DateTime? baslangicTarihi = null, DateTime? bitisTarihi = null)
         {
             // Önce kaydedilmiş sayımları kontrol et
-            var kaydedilmisSayimlar = _mockSayimlar.ToList();
+            List<Sayim> kaydedilmisSayimlar;
+            lock (_mockSayimLock)
+            {
+                EnsureNextIdsInitialized();
+
+                kaydedilmisSayimlar = _mockSayimlar
+                    .Select(sayim => new Sayim
+                    {
+                        Id = sayim.Id,
+                        Tarih = sayim.Tarih,
+                        KullaniciId = sayim.KullaniciId,
+                        FisNo = sayim.FisNo,
+                        Durum = sayim.Durum,
+                        Detaylar = sayim.Detaylar?
+                            .Select(detay => new SayimDetay
+                            {
+                                Id = detay.Id,
+                                SayimId = detay.SayimId,
+                                UrunId = detay.UrunId,
+                                UrunKodu = detay.UrunKodu,
+                                UrunAdi = detay.UrunAdi,
+                                Barkod = detay.Barkod,
+                                MevcutStok = detay.MevcutStok,
+                                SayilanMiktar = detay.SayilanMiktar,
+                                Fark = detay.Fark,
+                                Birim = detay.Birim,
+                                SonGuncelleme = detay.SonGuncelleme,
+                                MalzemeKodu = detay.MalzemeKodu,
+                                DepoKodu = detay.DepoKodu
+                            })
+                            .ToList(),
+                        Urunler = null // aşağıda Detaylar ile doldurulacak
+                    })
+                    .ToList();
+            }
             
             // Geçici test verisi - gerçek veritabanı bağlantısı olmadığında
             var sayimlar = new List<Sayim>
@@ -474,6 +538,29 @@ namespace APEX.Data.Repositories
             }
 
             return detaylar;
+        }
+
+        private static void EnsureNextIdsInitialized()
+        {
+            if (_mockSayimlar.Count == 0)
+                return;
+
+            var maxSayimId = _mockSayimlar.Max(s => s.Id);
+            if (maxSayimId >= _nextSayimId)
+            {
+                _nextSayimId = maxSayimId + 1;
+            }
+
+            var maxDetayId = _mockSayimlar
+                .SelectMany(s => s.Detaylar ?? Enumerable.Empty<SayimDetay>())
+                .Select(d => d.Id)
+                .DefaultIfEmpty(0)
+                .Max();
+
+            if (maxDetayId >= _nextSayimDetayId)
+            {
+                _nextSayimDetayId = maxDetayId + 1;
+            }
         }
 
         // Sipariş Yönetimi
